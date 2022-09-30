@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,7 +18,10 @@ public class PersonaService {
     private IPersonaRespository iPersonaRespository;
 
     public Persona savePersona(Persona persona){
-        if (persona.getName()==null || persona.getId()==null || persona.getBirthday()==null){
+        if (persona.getName()==null
+                || persona.getId()==null
+                || persona.getBirthday()==null
+                || iPersonaRespository.existsById(persona.getId())){
             return null;
         }
         return iPersonaRespository.save(persona);
@@ -25,6 +29,10 @@ public class PersonaService {
 
     public Page<Persona> getAllPersonas(Integer page, Integer size, Boolean enablePagination){
         return iPersonaRespository.findAll(enablePagination ? PageRequest.of(page, size): Pageable.unpaged());
+    }
+
+    public List<Persona> getListaPersonas(){
+        return  iPersonaRespository.findAll();
     }
 
     public Optional<Persona> findById(Long id){
